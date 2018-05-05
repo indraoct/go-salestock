@@ -34,10 +34,6 @@ Akan dibuat endpoint sebagai berikut :
 6. **Get Stock In** --> untuk mendapat data barang masuk
 7. **Get Stock Out** --> untuk mendapat data barang keluar
 
-**Technical Spesifikasi** :
-1. Framework Echo (3rd party Golang Framework)
-2. SQlite Database
-
 **Cara Penggunaan** :
 Berikut ini adalah step-step yang harus dilakukan beberapa hal supaya aplikasinya bisa jalan dengan semestinya
 
