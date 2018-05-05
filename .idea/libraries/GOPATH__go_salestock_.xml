@@ -1,0 +1,26 @@
+<component name="libraryTable">
+  <library name="GOPATH &lt;go-salestock&gt;">
+    <CLASSES>
+      <root url="file://$USER_HOME$/go-work/src/indraoctama" />
+      <root url="file://$USER_HOME$/go-work/src/indraecho" />
+      <root url="file://$USER_HOME$/go-work/src/golang.org" />
+      <root url="file://$USER_HOME$/go-work/src/github.com" />
+      <root url="file://$USER_HOME$/go-work/src/indraakses" />
+      <root url="file://$USER_HOME$/go-work/src/TestJson" />
+      <root url="file://$USER_HOME$/go-work/src/indragolangweb" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$USER_HOME$/go-work/src/indraoctama" />
+      <root url="file://$USER_HOME$/go-work/src/indraecho" />
+      <root url="file://$USER_HOME$/go-work/src/golang.org" />
+      <root url="file://$USER_HOME$/go-work/src/github.com" />
+      <root url="file://$USER_HOME$/go-work/src/indraakses" />
+      <root url="file://$USER_HOME$/go-work/src/TestJson" />
+      <root url="file://$USER_HOME$/go-work/src/indragolangweb" />
+    </SOURCES>
+    <excluded>
+      <root url="file://$PROJECT_DIR$" />
+    </excluded>
+  </library>
+</component>
