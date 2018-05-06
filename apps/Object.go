@@ -24,7 +24,22 @@ type Stock_Ins struct {
 
 //Stock_Outs
 type Stock_Outs struct {
+         Transaction_Id string `gorm:"null" form"transaction_id" json:"transaction_id"`
+	 Sku               string    `gorm:"not null" form:"sku" json:"sku"`
+	 Qty               int       `gorm:"not null" form:"qty" json:"qty"`
+	 Note              string    `gorm:"not null" form:"note" json:"note"`
+	 Created_Date      string    `gorm:"not null" form:"created_date" json:"created_date"`
 
+}
+
+//transactions
+type Transactions struct {
+	Id                string `gorm:"null" form"id" json:"id"`
+	Sku               string    `gorm:"not null" form:"sku" json:"sku"`
+	Qty               int       `gorm:"not null" form:"qty" json:"qty"`
+	Buy_Price         int       `gorm:"not null" form:"buy_price" json:"buy_price"`
+	Sell_Price        int       `gorm:"not null" form:"sell_price" json:"sell_price"`
+	Created_Date      string    `gorm:"not null" form:"created_date" json:"created_date"`
 }
 
 //ResponseProduct Struct
@@ -45,9 +60,9 @@ type ResponseInsertProduct struct {
 type DataInsertProduct struct{
 		Sku               string    `gorm:"not null" form:"sku" json:"sku"`
 		Product_name      string    `gorm:"not null" form:"product_name" json:"product_name"`
-		Stocks            int    `gorm:"not null" form:"stocks" json:"stocks"`
+		Stocks            int       `gorm:"not null" form:"stocks" json:"stocks"`
 		Buy_Price         int       `gorm:"not null" form:"buy_price" json:"buy_price"`
-		created_date      string    `gorm:"not null" form:"created_date" json:"created_date"`
+		Created_Date      string    `gorm:"not null" form:"created_date" json:"created_date"`
 }
 
 //ResponseTransaction
@@ -60,10 +75,11 @@ type ResponseTransaction struct {
 
 //Data Transaction
 type DataTransaction struct {
+	Transaction_Id    string    `form:"transaction_id" json:"transaction_id"`
 	Sku               string    `gorm:"not null" form:"sku" json:"sku"`
 	Product_name      string    `gorm:"not null" form:"product_name" json:"product_name"`
 	Stocks            int       `gorm:"not null" form:"stocks" json:"stocks"`
 	Buy_Price         int       `gorm:"not null" form:"buy_price" json:"buy_price"`
 	Sell_Price        int       `gorm:"not null" form:"sell_price" json:"sell_price"`
-	created_date      string    `gorm:"not null" form:"created_date" json:"created_date"`
+	Created_Date      string    `gorm:"not null" form:"created_date" json:"created_date"`
 }

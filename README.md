@@ -9,7 +9,7 @@ untuk di consume oleh client aplikasi (web).
 **Desain Database** :
 Saya mengkategorikan data menjadi 4 table yakni :
 1. Table **products** (sku,product_name,stocks)
-2. Table **stock_ins** (created_date,sku,buy_price,qty,kwitansi)
+2. Table **stock_ins** (id,created_date,sku,buy_price,qty,kwitansi)
 3. Table **stock_outs** (id,transaction_id,sku,qty,note,created_date)
 4. Table **transactions** (id,created_date,sku,qty,buy_price,sell_price)
 
@@ -56,7 +56,7 @@ Dokumentasi:
 http://doc.gorm.io/advanced.html#compose-primary-key
 ```
 
-Instalasi :
+Go get gorm :
 ```
 go get -u github.com/jinzhu/gorm
 

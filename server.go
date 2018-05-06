@@ -38,7 +38,7 @@ func main() {
 
 		v.GET("/getstockout",models.GetStockOut)
 
-		v.GET("getstockin",models.GetStockIn)
+		v.GET("/getstockin",models.GetStockIn)
 	}
 
 	e.Run(":8888")

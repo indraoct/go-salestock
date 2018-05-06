@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"time"
 	"strconv"
+	"math/rand"
 )
 
 
@@ -64,15 +65,14 @@ func InsertProduct(c *gin.Context)  {
 
 	status := 1
 	message := "Success"
-	rensponseInsertProduct := ResponseInsertProduct{Status:status,Message:message}
+	var rensponseInsertProduct ResponseInsertProduct
 	var newstocks int
-	currentTime := time.Now()
 	var products Products
 	var products_arr []Products
 	var stock_ins Stock_Ins
 	buyPrice,_ := strconv.Atoi(c.PostForm("buy_price"))
 	qtY,_ := strconv.Atoi(c.PostForm("qty"))
-	currentdatetime := currentTime.Format("2006-01-02 15:04:05")
+	currentdatetime := time.Now().Format("2006-01-02 15:04:05")
 	stock_ins = Stock_Ins{Sku:c.PostForm("sku"),Buy_Price:buyPrice,Created_Date:currentdatetime,Qty:qtY,Kwitansi:c.PostForm("kwitansi")}
 	db := InitDb()
 	tx := db.Begin()
@@ -83,7 +83,7 @@ func InsertProduct(c *gin.Context)  {
 		message = "failed to insert data stock_ins"
 	} else{
 
-		db.Where("sku = ?", c.PostForm("sku")).First(&products).Scan(&products_arr)
+		db.Where("sku = ?", c.PostForm("sku")).First(&products).Limit(1).Scan(&products_arr)
 
 		// its new record or update record?
 		if (len(products_arr) > 0){
@@ -113,7 +113,9 @@ func InsertProduct(c *gin.Context)  {
 	}
 
 	if status == 1 {
-		rensponseInsertProduct = ResponseInsertProduct{Status:status, Message:message,Data:DataInsertProduct{Stocks:newstocks, Sku:c.PostForm("sku"), Product_name:c.PostForm("product_name"), Buy_Price:buyPrice, created_date:currentdatetime}}
+		rensponseInsertProduct = ResponseInsertProduct{Status:status, Message:message,Data:DataInsertProduct{Stocks:newstocks, Sku:c.PostForm("sku"), Product_name:c.PostForm("product_name"), Buy_Price:buyPrice, Created_Date:currentdatetime}}
+	}else{
+		rensponseInsertProduct = ResponseInsertProduct{Status:status,Message:message}
 	}
 
 	//transaction commit
@@ -124,17 +126,118 @@ func InsertProduct(c *gin.Context)  {
 	c.JSON(200, rensponseInsertProduct)
 }
 
+/**
+ * Insert data to transaction table and stock_in table
+ */
 func Transaction(c *gin.Context)  {
 
+	t_type,_ := strconv.Atoi(c.PostForm("transaction_type")) // 1 : sales , 2 : missing products (hilang)
+	status := 1
+	message := "Success"
+        var responseTransaction ResponseTransaction
+	var newstocks int
+	var products Products
+	var products_arr []Products
+	var stock_ins_arr []Stock_Ins
+	var stock_outs Stock_Outs
+	var stock_ins Stock_Ins
+	var note string
+	transaction_id := ""
+	sellPrice,_ := strconv.Atoi(c.PostForm("sell_price"))
+	var buyPrice int
+	qtY,_ := strconv.Atoi(c.PostForm("qty"))
+	currentdatetime := time.Now().Format("2006-01-02 15:04:05")
+	db := InitDb() //db intiate
+	//get data products
+	db.Where("sku = ?", c.PostForm("sku")).First(&products).Limit(1).Scan(&products_arr)
+
+	//check if the sku is exist?
+	if(len(products_arr) > 0) {
+		tx := db.Begin()
+
+		/**
+	         * Identify product is gone / transaction by sales
+	         */
+
+		if (t_type == 1) {
+
+			transaction_id = generateTransactionID()
+
+			//get data products
+			db.Where("sku = ?", c.PostForm("sku")).First(&stock_ins).Limit(1).Scan(&stock_ins_arr)
+
+			// get the data stock after transaction
+			for i,element := range stock_ins_arr{
+				if (i == 0) {
+					buyPrice = element.Buy_Price
+				}
+			}
+
+			note = "Pesanan "+transaction_id
+			transactions := Transactions{Id:transaction_id,Buy_Price:buyPrice,Sell_Price:sellPrice,Qty:qtY,Sku:c.PostForm("sku"),Created_Date:currentdatetime}
+			if err := tx.Create(&transactions).Error; err != nil {
+				tx.Rollback()
+				status = 0
+				message = "failed to insert data transaction"
+			}
 
 
-	c.JSON(200, "")
+		} else if (t_type == 2) {
+
+			note = "Barang Hilang"
+
+		}
+		//insert data to stock_outs
+		stock_outs = Stock_Outs{Sku:c.PostForm("sku"),Created_Date:currentdatetime,Qty:qtY,Note:note,Transaction_Id:transaction_id}
+		if err := tx.Create(&stock_outs).Error; err != nil {
+			tx.Rollback()
+			status = 0
+			message = "failed to insert data stocks_outs"
+		}
+
+		// get the data stock after transaction
+		for i,element := range products_arr{
+			if (i == 0) {
+				newstocks = element.Stocks - qtY
+			}
+		}
+
+		//update product stocks in table products
+		if err := tx.Model(&products).Where("sku = ?", c.PostForm("sku")).Update("stocks", newstocks).Error; err != nil {
+			tx.Rollback()
+			status = 0
+			message = "failed to update data products"
+		}
+
+
+		//transaction commit
+		tx.Commit()
+	}else{
+		status = 0
+		message = "SKU Not found!"
+	}
+
+	if status == 1{
+		responseTransaction = ResponseTransaction{Status:status,Message:message,Data:DataTransaction{Sku:c.PostForm("sku"),Buy_Price:buyPrice,Sell_Price:sellPrice,Created_Date:currentdatetime,Product_name:c.PostForm("product_name"),Stocks:newstocks,Transaction_Id:transaction_id}}
+	}else{
+		responseTransaction = ResponseTransaction{Status:status,Message:message}
+	}
+
+	// Close connection database
+	defer db.Close()
+	c.JSON(200, responseTransaction)
 }
 
-
+/**
+ * Data CSV
+ */
 func GetProductValuation(c *gin.Context)  {
 	c.JSON(200, "")
 }
+
+/**
+ * Data CSV
+ */
 
 func GetProductSales(c *gin.Context)  {
 	c.JSON(200, "")
@@ -145,6 +248,20 @@ func GetStockOut(c *gin.Context)  {
 }
 
 func GetStockIn(c *gin.Context)  {
-	c.JSON(200, "")
+
+	c.JSON(200,"")
+
+}
+/**
+ * Generate transaction ID
+ */
+func generateTransactionID()string{
+
+	word1 := "ID"
+	word2 := string(time.Now().Format("20060102"))
+
+	word3 := rand.Intn(999999-100000)
+
+	return word1+"-"+word2+"-"+strconv.Itoa(word3)
 
 }
