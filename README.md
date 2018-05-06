@@ -9,18 +9,18 @@ untuk di consume oleh client aplikasi (web).
 **Desain Database** :
 Saya mengkategorikan data menjadi 4 table yakni :
 1. Table **products** (sku,product_name,stocks)
-2. Table **stock_in** (created_date,sku,buy_price,qty,kwitansi)
-3. Table **stock_out** (id,transaction_id,sku,qty,note,created_date)
-4. Table **transaction** (id,created_date,sku,qty,buy_price,sell_price)
+2. Table **stock_ins** (created_date,sku,buy_price,qty,kwitansi)
+3. Table **stock_outs** (id,transaction_id,sku,qty,note,created_date)
+4. Table **transactions** (id,created_date,sku,qty,buy_price,sell_price)
 
 **User Story** :
 Alasan dibuat 4 table karena Ijah punya kebutuhan untuk:
 1. mencatat berapa jumlah SKU barang dan stock saat ini (table **products**),
-2. mencatat barang yang di beli dari produsen (**stock_in**) 
-3. mencatat berapa barang yang terjual (**stock_out**)
+2. mencatat barang yang di beli dari produsen (**stock_ins**) 
+3. mencatat berapa barang yang terjual (**stock_outs**)
 4. Dari table-table tersebut, Ijah dapat mengambil sample data untuk kebutuhan analisa berapa omzet & keuntungan dengan
-melakukan join table **stock_out**,**transaction**, dan **products**. 
-5. Ijah juga dapat menganalisa milai barang yang dia kelola dengan join table **transaction** dan **products**
+melakukan join table **stock_outs**,**transactions**, dan **products**. 
+5. Ijah juga dapat menganalisa milai barang yang dia kelola dengan join table **transactions** dan **products**
 
 **Spesifikasi**
 

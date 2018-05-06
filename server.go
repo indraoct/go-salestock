@@ -5,9 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-/**
- * Just For API with curl
- */
+
 func Cors() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Writer.Header().Add("Access-Control-Allow-Origin", "*")
