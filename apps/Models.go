@@ -127,7 +127,7 @@ func InsertProduct(c *gin.Context)  {
 }
 
 /**
- * Insert data to transaction table and stock_in table
+ * Insert data to transaction table and stock_outs table
  */
 func Transaction(c *gin.Context)  {
 
