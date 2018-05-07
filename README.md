@@ -61,3 +61,166 @@ Go get gorm :
 go get -u github.com/jinzhu/gorm
 
 ```
+
+**Endpoint**
+1. Get Products
+```
+ curl -k http://localhost:8888/api/getproducts
+```
+
+response : 
+```
+{
+    "status": 1,
+    "message": "Success",
+    "data": [
+        {
+            "sku": "SSI-D00864652-SS-NAV",
+            "product_name": "Deklia Plain Casual Blouse (S,Navy)",
+            "stocks": "2"
+        },
+        {
+            "sku": "SSI-D00864612-LL-NAV",
+            "product_name": "Deklia Plain Casual Blouse (L,Navy)",
+            "stocks": "8"
+        },
+        {
+            "sku": "SSI-D01037822-XX-BLA",
+            "product_name": "Dellaya Plain Loose Big Blouse (XXL,Black)",
+            "stocks": "8"
+        },
+        {
+            "sku": "SSI-D00864661-MM-NAV",
+            "product_name": "Deklia Plain Casual Blouse (M,Navy)",
+            "stocks": "13"
+        },
+        {
+            "sku": "SSI-D01401064-XL-RED",
+            "product_name": "Zeomila Zipper Casual Blouse (XL,Red)",
+            "stocks": "44"
+        },
+        .....
+    ]
+}
+
+```
+
+2. Insert products
+
+```
+curl -X POST \
+  http://localhost:8888/api/insertproduct \
+  -H 'cache-control: no-cache' \
+  -H 'content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' \
+  -H 'postman-token: f689a8c6-3c12-f330-e384-ad34ded64cad' \
+  -F sku=ffffff-ccc-ikik \
+  -F buy_price=120000 \
+  -F 'product_name=Zalekia Plain Casual Jeans (L,Broken White)' \
+  -F qty=35 \
+  -F kwitansi=1234-1234-4322
+```
+
+response :
+```
+{
+    "status": 1,
+    "message": "Success",
+    "Data": {
+        "sku": "ffffff-ccc-ikik",
+        "product_name": "Zalekia Plain Casual Jeans (L,Broken White)",
+        "stocks": 37,
+        "buy_price": 120000,
+        "created_date": "2018-05-06 23:23:12"
+    }
+}
+```
+
+3. Transaction
+
+```
+curl -X POST \
+  http://localhost:8888/api/transaction \
+  -H 'cache-control: no-cache' \
+  -H 'content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW' \
+  -H 'postman-token: 270b7a54-d898-c3b8-250d-f74fdee3bf4c' \
+  -F transaction_type=1 \
+  -F sku=ffffff-ccc-ikik \
+  -F buy_price=120000 \
+  -F sell_price=130000 \
+  -F qty=1 \
+  -F 'product_name=Zalekia Plain Casual Jeans (L,Broken White)'
+```
+
+response :
+```
+{
+    "status": 1,
+    "message": "Success",
+    "Data": {
+        "transaction_id": "ID-20180506-203094",
+        "sku": "ffffff-ccc-ikik",
+        "product_name": "Zalekia Plain Casual Jeans (L,Broken White)",
+        "stocks": 36,
+        "buy_price": 120000,
+        "sell_price": 130000,
+        "created_date": "2018-05-06 23:23:21"
+    }
+}
+```
+
+4. Get product Sales
+```
+curl -k http://localhost:8888/api/getproductsales
+```
+
+response :
+```
+ID Pesanan,Waktu,SKU,Nama Barang,Jumlah,Harga Jual,Total,Harga Beli,Laba
+ID-12345-9091,2018-05-06T22:18:18Z,ffffff-ccc-ikik,"Zalekia Plain Casual Jeans (L,Broken White)",1,130000,130000,120000,10000
+ID-12345-9092,2018-05-06T22:19:18Z,ffffff-ccc-ikik,"Zalekia Plain Casual Jeans (L,Broken White)",1,130000,130000,120000,10000
+ID-12345-9093,2018-05-06T22:20:57Z,ffffff-ccc-ikik,"Zalekia Plain Casual Jeans (L,Broken White)",3,130000,390000,120000,10000
+ID-12345-9094,2018-05-06T22:22:30Z,ffffff-ccc-ikik,"Zalekia Plain Casual Jeans (L,Broken White)",1,130000,130000,120000,10000
+ID-12345-9095,2018-05-06T22:22:48Z,ffffff-ccc-ikik,"Zalekia Plain Casual Jeans (L,Broken White)",1,130000,130000,120000,10000
+ID-20180506-699523,2018-05-06T23:09:11Z,ffffff-ccc-ikik,"Zalekia Plain Casual Jeans (L,Broken White)",1,130000,130000,120000,10000
+ID-20180506-130131,2018-05-06T23:13:57Z,ffffff-ccc-ikik,"Zalekia Plain Casual Jeans (L,Broken White)",1,130000,130000,120000,10000
+ID-20180506-633432,2018-05-06T23:14:10Z,ffffff-ccc-ikik,"Zalekia Plain Casual Jeans (L,Broken White)",1,130000,130000,120000,10000
+ID-20180506-385103,2018-05-06T23:14:12Z,ffffff-ccc-ikik,"Zalekia Plain Casual Jeans (L,Broken White)",1,130000,130000,120000,10000
+ID-20180506-203094,2018-05-06T23:23:21Z,ffffff-ccc-ikik,"Zalekia Plain Casual Jeans (L,Broken White)",1,130000,130000,120000,10000
+
+```
+
+5. Get Stock In
+```
+curl -k http://localhost:8888/api/getstockin
+```
+response :
+```
+SKU,Waktu,Harga Beli,Jumlah,Kwitansi
+ffffff-ccc-ikik,2018-05-06T23:23:12Z,120000,35,1234-1234-4322
+ffffff-ccc-ikik,2018-05-06T23:08:49Z,120000,7,1234-1234-4322
+ffffff-ccc-ikik,2018-05-06T22:05:56Z,120000,2,1234-1234-4322
+ffffff-ccc-ikik,2018-05-06T22:03:31Z,120000,5,1234-1234-4321
+
+```
+
+6. Get Stock Out
+```
+curl -k http://localhost:8888/api/getstockout
+```
+response :
+```
+ID Transaksi,SKU,Jumlah,Catatan,Waktu
+ID-20180506-203094,ffffff-ccc-ikik,1,Pesanan ID-20180506-203094,2018-05-06T23:23:21Z
+ID-20180506-385103,ffffff-ccc-ikik,1,Pesanan ID-20180506-385103,2018-05-06T23:14:12Z
+ID-20180506-633432,ffffff-ccc-ikik,1,Pesanan ID-20180506-633432,2018-05-06T23:14:10Z
+ID-20180506-130131,ffffff-ccc-ikik,1,Pesanan ID-20180506-130131,2018-05-06T23:13:57Z
+,ffffff-ccc-ikik,1,Barang Hilang,2018-05-06T23:10:35Z
+ID-20180506-699523,ffffff-ccc-ikik,1,Pesanan ID-20180506-699523,2018-05-06T23:09:11Z
+ID-12345-9095,ffffff-ccc-ikik,1,Pesanan ID-12345-9095,2018-05-06T22:22:48Z
+ID-12345-9094,ffffff-ccc-ikik,1,Pesanan ID-12345-9094,2018-05-06T22:22:30Z
+ID-12345-9093,ffffff-ccc-ikik,3,Pesanan ID-12345-9093,2018-05-06T22:20:57Z
+ID-12345-9092,ffffff-ccc-ikik,1,Pesanan ID-12345-9092,2018-05-06T22:19:18Z
+ID-12345-9091,ffffff-ccc-ikik,1,Pesanan ID-12345-9091,2018-05-06T22:18:18Z
+
+
+```

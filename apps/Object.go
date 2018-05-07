@@ -63,6 +63,23 @@ type Transactions struct {
 	Created_Date      string    `gorm:"not null" form:"created_date" json:"created_date"`
 }
 
+//Transaction CSV
+
+type Transactions_CSV struct {
+	Id                string             `csv:"id"`
+	Created_Date      string             `csv:"created_date"`
+	Sku               string             `csv:"sku"`
+	Product_name      string             `csv:"product_name"`
+	Qty               string             `csv:"qty"`
+	Buy_Price         string             `csv:"buy_price"`
+	Total             string             `csv:"total"`
+	Sell_Price        string             `csv:"sell_price"`
+	Laba              string             `csv:"laba"`
+
+
+
+}
+
 //ResponseProduct Struct
 type ResponseProduct struct {
 	Status    int        `form:"status" json:"status"`

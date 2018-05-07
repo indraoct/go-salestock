@@ -238,9 +238,39 @@ func GetProductValuation(c *gin.Context)  {
 }
 
 
-
+/**
+ * Laporan Penjualan
+ */
 func GetProductSales(c *gin.Context)  {
-	c.JSON(200, "")
+
+	// Connection to the database
+	db := InitDb()
+	// Close connection database
+	defer db.Close()
+
+	var transactions []Transactions_CSV
+
+	db.Raw("SELECT t.id AS id, t.created_date AS created_date, t.sku AS sku,p.product_name AS product_name,t.qty AS qty, t.sell_price AS sell_price, (t.sell_price*t.qty) AS total, t.buy_price AS buy_price, (t.sell_price - t.buy_price) AS laba FROM transactions AS t LEFT JOIN products AS p ON t.sku = p.sku").Scan(&transactions)
+
+
+	var record [][]string
+	record = append(record,[]string{"ID Pesanan","Waktu","SKU","Nama Barang","Jumlah","Harga Jual","Total","Harga Beli","Laba"})
+
+	b := &bytes.Buffer{} // creates IO Writer
+	wr := csv.NewWriter(b) // creates a csv writer that uses the io buffer.
+
+	for _,element := range transactions {
+		record = append(record,[]string{element.Id,element.Created_Date,element.Sku,element.Product_name,element.Qty,element.Sell_Price,element.Total,element.Buy_Price,element.Laba})
+	}
+
+	wr.WriteAll(record)
+
+	wr.Flush() // writes the csv writer data to  the buffered data io writer(b(bytes.buffer))
+
+	c.Header("Content-Type", "text/csv")
+	c.Header("Content-Disposition", "attachment; filename=laporan_penjualan.csv")
+	c.Data(http.StatusOK, "text/csv", b.Bytes())
+
 }
 
 /**

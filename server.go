@@ -5,7 +5,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-
+/**
+ * Allow all subdomain
+ */
 func Cors() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Writer.Header().Add("Access-Control-Allow-Origin", "*")
