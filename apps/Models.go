@@ -243,7 +243,7 @@ func GetProductValuation(c *gin.Context)  {
 
 	var productvaluation []ProductValuation_CSV
 
-	db.Raw("SELECT p.sku AS sku,p.product_name,p.stocks,avg(si.buy_price) AS avg_buy_price, (avg(si.buy_price)*p.stocks) AS total   FROM products AS p LEFT JOIN stock_ins AS si ON p.sku = si.sku GROUP BY p.sku").Scan(&productvaluation)
+	db.Raw("SELECT p.sku AS sku,p.product_name,p.stocks AS qty,avg(si.buy_price) AS avg_buy_price, (avg(si.buy_price)*p.stocks) AS total   FROM products AS p LEFT JOIN stock_ins AS si ON p.sku = si.sku GROUP BY p.sku").Scan(&productvaluation)
 
 	var record [][]string
 	record = append(record,[]string{"SKU","Nama Item","Jumlah","Rata-Rata Harga Beli","Total"})
