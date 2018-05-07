@@ -231,7 +231,9 @@ func Transaction(c *gin.Context)  {
 	c.JSON(200, responseTransaction)
 }
 
-
+/**
+ * Get Product Valuation
+ */
 func GetProductValuation(c *gin.Context)  {
 
 	c.JSON(200, "")
@@ -250,7 +252,7 @@ func GetProductSales(c *gin.Context)  {
 
 	var transactions []Transactions_CSV
 
-	db.Raw("SELECT t.id AS id, t.created_date AS created_date, t.sku AS sku,p.product_name AS product_name,t.qty AS qty, t.sell_price AS sell_price, (t.sell_price*t.qty) AS total, t.buy_price AS buy_price, (t.sell_price - t.buy_price) AS laba FROM transactions AS t LEFT JOIN products AS p ON t.sku = p.sku").Scan(&transactions)
+	db.Raw("SELECT t.id AS id, t.created_date AS created_date, t.sku AS sku,p.product_name AS product_name,t.qty AS qty, t.sell_price AS sell_price, (t.sell_price*t.qty) AS total, t.buy_price AS buy_price, ((t.sell_price*t.qty) - (t.buy_price*t.qty)) AS laba FROM transactions AS t LEFT JOIN products AS p ON t.sku = p.sku").Scan(&transactions)
 
 
 	var record [][]string
