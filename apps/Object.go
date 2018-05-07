@@ -80,6 +80,18 @@ type Transactions_CSV struct {
 
 }
 
+//Get Product valuation CSV
+
+type ProductValuation_CSV struct {
+	Sku    string `csv:"sku"`
+	Product_name      string             `csv:"product_name"`
+	Qty               string             `csv:"qty"`
+	Avg_Buy_Price     string             `csv:"avg_buy_price"`
+	Total             string             `csv:"total"`
+
+
+}
+
 //ResponseProduct Struct
 type ResponseProduct struct {
 	Status    int        `form:"status" json:"status"`

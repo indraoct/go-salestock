@@ -236,7 +236,32 @@ func Transaction(c *gin.Context)  {
  */
 func GetProductValuation(c *gin.Context)  {
 
-	c.JSON(200, "")
+	// Connection to the database
+	db := InitDb()
+	// Close connection database
+	defer db.Close()
+
+	var productvaluation []ProductValuation_CSV
+
+	db.Raw("SELECT p.sku AS sku,p.product_name,p.stocks,avg(si.buy_price) AS avg_buy_price, (avg(si.buy_price)*p.stocks) AS total   FROM products AS p LEFT JOIN stock_ins AS si ON p.sku = si.sku GROUP BY p.sku").Scan(&productvaluation)
+
+	var record [][]string
+	record = append(record,[]string{"SKU","Nama Item","Jumlah","Rata-Rata Harga Beli","Total"})
+
+	b := &bytes.Buffer{} // creates IO Writer
+	wr := csv.NewWriter(b) // creates a csv writer that uses the io buffer.
+
+	for _,element := range productvaluation {
+		record = append(record,[]string{element.Sku,element.Product_name,element.Qty,element.Avg_Buy_Price,element.Total})
+	}
+
+	wr.WriteAll(record)
+
+	wr.Flush() // writes the csv writer data to  the buffered data io writer(b(bytes.buffer))
+
+	c.Header("Content-Type", "text/csv")
+	c.Header("Content-Disposition", "attachment; filename=productvaluation.csv")
+	c.Data(http.StatusOK, "text/csv", b.Bytes())
 }
 
 
