@@ -7,6 +7,9 @@ import (
 	"time"
 	"strconv"
 	"math/rand"
+	"encoding/csv"
+	"net/http"
+	"bytes"
 )
 
 
@@ -228,30 +231,92 @@ func Transaction(c *gin.Context)  {
 	c.JSON(200, responseTransaction)
 }
 
-/**
- * Data CSV
- */
+
 func GetProductValuation(c *gin.Context)  {
+
 	c.JSON(200, "")
 }
 
-/**
- * Data CSV
- */
+
 
 func GetProductSales(c *gin.Context)  {
 	c.JSON(200, "")
 }
 
+/**
+ * Get Stock Outs (CSV)
+ */
 func GetStockOut(c *gin.Context)  {
-	c.JSON(200, "")
+
+	// Connection to the database
+	db := InitDb()
+	// Close connection database
+	defer db.Close()
+
+	//initiate variable product to array
+	var stock_outs []Stock_Outs_CSV
+
+
+	//Database query
+	db.Raw("SELECT transaction_id,sku,qty,note,created_date FROM stock_outs order by created_date desc").Scan(&stock_outs)
+
+
+	var record [][]string;
+	record = append(record,[]string{"ID Transaksi","SKU","Jumlah","Catatan","Waktu"})
+
+	b := &bytes.Buffer{} // creates IO Writer
+	wr := csv.NewWriter(b) // creates a csv writer that uses the io buffer.
+
+	for _,element := range stock_outs {
+		record = append(record,[]string{element.Transaction_Id,element.Sku,element.Qty,element.Note,element.Created_Date})
+	}
+
+	wr.WriteAll(record)
+
+	wr.Flush() // writes the csv writer data to  the buffered data io writer(b(bytes.buffer))
+
+	c.Header("Content-Type", "text/csv")
+	c.Header("Content-Disposition", "attachment; filename=stock_outs.csv")
+	c.Data(http.StatusOK, "text/csv", b.Bytes())
 }
 
+/**
+ * Get Stock Ins (CSV)
+ */
 func GetStockIn(c *gin.Context)  {
+	// Connection to the database
+	db := InitDb()
+	// Close connection database
+	defer db.Close()
 
-	c.JSON(200,"")
+	//initiate variable product to array
+	var stock_ins []Stock_Ins_CSV
+
+
+	//Database query
+	db.Raw("SELECT sku,buy_price,qty,kwitansi,created_date FROM stock_ins order by created_date desc").Scan(&stock_ins)
+
+
+	var record [][]string;
+	record = append(record,[]string{"SKU","Waktu","Harga Beli","Jumlah","Kwitansi"})
+
+	b := &bytes.Buffer{} // creates IO Writer
+	wr := csv.NewWriter(b) // creates a csv writer that uses the io buffer.
+
+	for _,element := range stock_ins {
+		record = append(record,[]string{element.Sku,element.Created_Date,element.Buy_Price,element.Qty,element.Kwitansi})
+	}
+
+	wr.WriteAll(record)
+
+	wr.Flush() // writes the csv writer data to  the buffered data io writer(b(bytes.buffer))
+
+	c.Header("Content-Type", "text/csv")
+	c.Header("Content-Disposition", "attachment; filename=stock_ins.csv")
+	c.Data(http.StatusOK, "text/csv", b.Bytes())
 
 }
+
 /**
  * Generate transaction ID
  */
