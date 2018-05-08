@@ -269,7 +269,7 @@ ffffff-ccc-ikik,"Zalekia Plain Casual Jeans (L,Broken White)",35,120000,4.2e+06
 
 ```
 
-**How to run the appliacation**
+**How to run the application**
 
 Silahkan ketik ini dan tekan enter di folder go-salestock (folder utama)
 ```
