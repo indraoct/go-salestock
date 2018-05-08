@@ -62,6 +62,12 @@ go get -u github.com/jinzhu/gorm
 
 ```
 
+5. Menggunakan driver sqlite
+```
+go get github.com/mattn/go-sqlite3
+
+```
+
 **Endpoint**
 1. Get Products
 ```
