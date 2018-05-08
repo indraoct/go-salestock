@@ -268,3 +268,11 @@ SSI-D01466064-X3-BLA,"Salyara Plain Casual Big Blouse (XXXL,Black)",52,,
 ffffff-ccc-ikik,"Zalekia Plain Casual Jeans (L,Broken White)",35,120000,4.2e+06
 
 ```
+
+**How to run the appliacation**
+
+Silahkan ketik ini dan tekan enter di folder go-salestock (folder utama)
+```
+go run server.go
+
+```
